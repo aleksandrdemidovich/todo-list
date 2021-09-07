@@ -6,3 +6,18 @@
 .App > div {
   margin-right: 50px;
 }
+
+
+.active-filter{
+  background-color: cadetblue;
+  color: white;
+}
+
+.is-done{
+  text-decoration: line-through;
+}
+
+.error{
+  border: 2px solid red;
+  outline: none;
+}

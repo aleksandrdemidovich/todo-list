@@ -24,21 +24,22 @@ function App() {
         {id: v1(), title: 'Angular', isDone: false},
         {id: v1(), title: 'NodeJS', isDone: true},
     ])
-    const [filter, setFilter] = useState<string>('all') //active, completed
+    const [filter, setFilter] = useState<FilterValueType>('all') //active, completed
 
     const changeTodoListFilter = (filter: FilterValueType) => {
         setFilter(filter)
     }
-
     const removeTask = (taskID: string) => {
         setTasks(tasks.filter(t => t.id !== taskID))
         console.log(tasks)
     }
-
     const addTask = (title: string) =>{
-        let task = {id: v1(), title: title, isDone: false}
-        let newTasks = [task, ...tasks]
-        setTasks(newTasks)
+        let newTask = {id: v1(), title: title, isDone: false}
+        const updatedTask: Array<TaskType> = [newTask, ...tasks]
+        setTasks(updatedTask)
+    }
+    const changeTaskStatus = (taskID: string, isDone:boolean) => {
+        setTasks(tasks.map(t => t.id === taskID ? {...t, isDone: isDone} : t))
     }
 
     let tasksForRender = tasks
@@ -54,10 +55,12 @@ function App() {
     return (
         <div className="App">
             <TodoList
+                filter={filter}
                 title={'What to learn'}
                 tasks={tasksForRender}
                 removeTask={removeTask}
                 changeTodoListFilter={changeTodoListFilter}
+                changeTaskStatus={changeTaskStatus}
                 addTask={addTask}
             />
         </div>
