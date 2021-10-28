@@ -1,9 +1,9 @@
 import {v1} from "uuid";
-import {TasksStateType, TodolistType} from "../App";
+import {TasksStateType} from "../App";
 import {RemoveTodolistACType} from "./TodolistReducer";
 
-let todolistId1 = v1();
-let todolistId2 = v1();
+// let todolistId1 = v1();
+// let todolistId2 = v1();
 
 let initialState:TasksStateType = {
     // [todolistId1]: [

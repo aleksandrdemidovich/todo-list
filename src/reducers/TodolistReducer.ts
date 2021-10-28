@@ -1,8 +1,8 @@
 import {FilterValuesType, TodolistType} from "../App";
 import {v1} from "uuid";
 
-let todolistId1 = v1();
-let todolistId2 = v1();
+// let todolistId1 = v1();
+// let todolistId2 = v1();
 
 let initialState:Array<TodolistType> = [
     // {id: todolistId1, title: 'What to learn', filter: 'all'},
