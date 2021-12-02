@@ -1,47 +1,73 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import './App.css'
 import { TodolistsList } from '../features/TodolistsList/TodolistsList'
-
-// You can learn about the difference by reading this guide on minimizing bundle size.
-// https://mui.com/guides/minimizing-bundle-size/
-// import { AppBar, Button, Container, IconButton, Toolbar, Typography } from '@mui/material';
+import {useDispatch, useSelector} from 'react-redux'
+import { AppRootStateType } from './store'
+import {initializeAppTC, RequestStatusType} from './app-reducer'
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
+import LinearProgress from '@mui/material/LinearProgress';
 import { Menu } from '@mui/icons-material';
-import LinearProgress from '@mui/material/LinearProgress/LinearProgress';
-import {useSelector} from "react-redux";
-import {AppRootStateType} from "./store";
-import {RequestStatusType} from "./app-reducer";
-import {ErrorSnackbar} from "../components/ErrorSnackbar/ErrorSnackbar";
+import { ErrorSnackbar } from '../components/ErrorSnackbar/ErrorSnackbar'
+import {Navigate, Route, Routes} from "react-router-dom";
+import {Login} from "../features/Login/Login";
+import {CircularProgress} from "@mui/material";
+import {logoutTC} from "../features/Login/auth-reducer";
 
 
-function App() {
+type PropsType = {
+    demo?: boolean
+}
 
+function App({demo = false}: PropsType) {
+    const dispatch = useDispatch()
     const status = useSelector<AppRootStateType, RequestStatusType>((state) => state.app.status)
+    const isInitialized = useSelector<AppRootStateType, boolean>(state => state.app.isInitialized)
+    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
+
+    useEffect(() => {
+        dispatch(initializeAppTC())
+    }, [])
+
+    if (!isInitialized) {
+        return <div
+            style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
+            <CircularProgress/>
+        </div>
+    }
+
+
+    const logoutHandler = () => {
+        dispatch(logoutTC())
+    }
 
     return (
         <div className="App">
             <ErrorSnackbar/>
-            <AppBar position="static">
-                <Toolbar>
+            <AppBar position="static"  >
+                <Toolbar style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
                     <IconButton edge="start" color="inherit" aria-label="menu">
                         <Menu/>
                     </IconButton>
                     <Typography variant="h6">
-                        News
+                        Todolists
                     </Typography>
-                    <Button color="inherit">Login</Button>
+                    {isLoggedIn && <Button style={{float: 'right'}} onClick={logoutHandler} color={"inherit"}>Log out</Button>}
                 </Toolbar>
+                {status === 'loading' && <LinearProgress color={"secondary"}/>}
             </AppBar>
-
-            { status === 'loading' &&<LinearProgress color="secondary" />}
-
             <Container fixed>
-                 <TodolistsList/>
+                <Routes>
+                    <Route path="/" element={<TodolistsList demo={demo}/>}/>
+                    <Route path="login" element={<Login/>}/>
+
+                    <Route path="*" element={<Navigate to="/404"/>}/>
+                    <Route path="404" element={<h1>404: PAGE NOT FOUND</h1>}/>
+                </Routes>
             </Container>
         </div>
     )
