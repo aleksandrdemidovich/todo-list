@@ -7,12 +7,17 @@ import FormGroup from '@mui/material/FormGroup';
 import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import {useFormik} from "formik";
+import {FormikHelpers, useFormik} from "formik";
 import {useDispatch, useSelector} from "react-redux";
 import {loginTC} from "./auth-reducer";
-import {AppRootStateType} from "../../app/store";
+import {AppRootStateType, useAppDispatch} from "../../app/store";
 import {Navigate} from "react-router-dom";
 
+type FormValuesType ={
+    email: string
+    password: string
+    rememberMe: boolean
+}
 type FormikErrorType = {
     email?: string
     password?: string
@@ -22,7 +27,7 @@ type FormikErrorType = {
 export const Login = () => {
 
     const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
 
     const formik = useFormik({
@@ -35,18 +40,22 @@ export const Login = () => {
             const errors: FormikErrorType = {};
             if (!values.email) {
                 errors.email = 'Required';
-            } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-                errors.email = 'Invalid email address';
             } else if (values.password.length < 3) {
                 errors.password = 'Min length 3 symbols';
             } else if (!values.password) {
                 errors.password = 'Required';
             }
-            return errors;
+            return errors
         },
-        onSubmit: values => {
-            formik.resetForm()
-            dispatch(loginTC(values))
+        onSubmit: async (values, formikHelpers: FormikHelpers<FormValuesType>) => {
+            const res = await dispatch(loginTC(values))
+            if(res.type === loginTC.rejected.type){
+                if(res.payload.errors){
+                    formikHelpers.setFieldError(res.payload.fieldsErrors[0].field, res.payload.fieldsErrors[0].error)
+                }
+            }
+            console.log(res)
+            // formik.resetForm()
         },
     })
 
