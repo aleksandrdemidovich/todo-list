@@ -1,35 +1,34 @@
-import React from 'react';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert, {AlertProps} from '@mui/material/Alert';
-import {useSelector} from 'react-redux';
-import {AppRootStateType} from '../../app/store';
-import {appActions} from "../../features/CommonActions/App";
-import {useActions} from "../../utils/redux-utils";
+import React from 'react'
+import {useSelector} from 'react-redux'
+import {appActions} from '../../features/CommonActions/App'
+import {AppRootStateType} from '../../utils/types'
+import {useActions} from '../../utils/redux-utils'
+import {Alert, AlertProps, Snackbar} from "@mui/material";
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-    props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-
+function ErrorAlert(props: AlertProps) {
+    return <Alert elevation={6} variant="filled" {...props} />
+}
 
 export function ErrorSnackbar() {
-
-    const error = useSelector<AppRootStateType, string | null>(state => state.app.error)
-
-    const {setAppErrorAC} = useActions(appActions)
+    //const [open, setOpen] = React.useState(true)
+    const error = useSelector<AppRootStateType, string | null>(state => state.app.error);
+    const {setAppError} = useActions(appActions)
 
     const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
         if (reason === 'clickaway') {
-            return;
+            return
         }
-        setAppErrorAC({error: null})
-    };
+        setAppError({error: null});
+    }
+
+
+    const isOpen = error !== null;
 
     return (
-        <Snackbar open={error !== null} autoHideDuration={6000} onClose={handleClose}>
-            <Alert onClose={handleClose} severity="error" sx={{width: '100%'}}>
+        <Snackbar open={isOpen} autoHideDuration={6000} onClose={handleClose}>
+            <ErrorAlert onClose={handleClose} severity="error">
                 {error}
-            </Alert>
+            </ErrorAlert>
         </Snackbar>
-    );
+    )
 }
