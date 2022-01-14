@@ -1,5 +1,15 @@
 import React from 'react'
-import {Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, TextField} from '@mui/material'
+import {
+    Button,
+    Checkbox,
+    FormControl,
+    FormControlLabel,
+    FormGroup,
+    FormLabel,
+    Grid,
+    Paper,
+    TextField
+} from '@mui/material'
 import {FormikHelpers, useFormik} from 'formik'
 import {useSelector} from 'react-redux'
 import {login} from './auth-reducer'
@@ -41,7 +51,7 @@ export const Login = () => {
         onSubmit: async (values: FormValuesType, formikHelpers: FormikHelpers<FormValuesType>) => {
             const resultAction = await dispatch(authActions.login(values));
 
-            if  (login.rejected.match(resultAction)) {
+            if (login.rejected.match(resultAction)) {
                 if (resultAction.payload?.fieldsErrors?.length) {
                     const error = resultAction.payload?.fieldsErrors[0];
                     formikHelpers.setFieldError(error.field, error.error);
@@ -51,11 +61,11 @@ export const Login = () => {
     })
 
     if (isLoggedIn) {
-        return <Navigate to={"/todo-list"} />
+        return <Navigate to={"/todo-list"}/>
     }
 
 
-    return <Grid container justifyContent={"center"}>
+    return <Grid container justifyContent={"center"} style={{marginTop:'15%'}}>
         <Grid item xs={4}>
             <form onSubmit={formik.handleSubmit}>
                 <FormControl>

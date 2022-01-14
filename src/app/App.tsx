@@ -34,7 +34,7 @@ function App({demo = false}: PropsType) {
     const {initializeApp} = useActions(appActions)
 
     useEffect(() => {
-        if (!demo) {
+        if (!demo && !isInitialized) {
             initializeApp()
         }
     }, [])

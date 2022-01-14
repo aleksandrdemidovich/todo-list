@@ -2,12 +2,12 @@ import React, {useCallback, useEffect} from 'react'
 import {useSelector} from 'react-redux'
 import {TodolistDomainType} from './todolists-reducer'
 import {TasksStateType} from './tasks-reducer'
-import {Grid, Typography} from '@mui/material'
+import {Grid} from '@mui/material'
 import {AddItemForm, AddItemFormSubmitHelperType} from '../../components/AddItemForm/AddItemForm'
 import {Todolist} from './Todolist/Todolist'
 import {Navigate} from 'react-router-dom'
 import {selectIsLoggedIn} from '../Auth/selectors'
-import {tasksActions, todolistsActions} from './index'
+import {todolistsActions} from './index'
 import {AppRootStateType} from '../../utils/types'
 import {useActions, useAppDispatch} from '../../utils/redux-utils'
 
@@ -21,7 +21,7 @@ export const TodolistsList: React.FC<PropsType> = ({demo = false}) => {
     const isLoggedIn = useSelector(selectIsLoggedIn)
 
     const dispatch = useAppDispatch()
-
+    console.log(123)
     const {fetchTodolistsTC, addTodolistTC} = useActions(todolistsActions)
 
     const addTodolistCallback = useCallback(async (title: string, helper: AddItemFormSubmitHelperType) => {
@@ -45,7 +45,9 @@ export const TodolistsList: React.FC<PropsType> = ({demo = false}) => {
         if (demo || !isLoggedIn) {
             return
         }
-        fetchTodolistsTC()
+        if (!todolists.length) {
+            fetchTodolistsTC()
+        }
     }, [])
 
 
